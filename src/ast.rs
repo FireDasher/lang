@@ -30,4 +30,3 @@ pub struct FunctionAST {
 	pub proto: Box<PrototypeAST>,
 	pub body: Box<dyn ExprAST>,
 }
-
