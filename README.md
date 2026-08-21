@@ -5,95 +5,110 @@ It's my new, unnamed programming language. It's like C++ but better.
 I need names for it! Z is the placeholder
 
 ## Planned Features:
-- C-like syntax
-- Pointers types are &type and get address by &variable_you_want_the_address_of
-- Have as many constructors as you want with different names
-- Create a constructor with the name default to be able to do Class(args) to construct it
-- Create structs with a Rust-like initializer syntax
-- Infer size and sign of types (32-bit or 64-bit, signed or unsigned) and whether a string literal is &char or String
-- Single inheritance, classes can inherit and be inherited but structs can't
-- Only inheritance can be polymorphized
-- Duck typing at compile time
-- Clean module system that doesn't require separating into a header and source file
-- No memory safety
-- Natively compatible with C and C++ libaries
-- Powerful macros
+- Type is after like go, ex. `let value int = 32`, or inferred if no type is after the name, ex. `let value = 32`
+- Functions are like `fn functionName(paramater_one int, paramater_two int) int {...}`
+- You can ommit the return value of a function to return nothing
+- Types are fixed-width, and if you don't want numbers in your type's names, `int` is an alias for i32, `uint` is an alias for u32, `long` is an alias for i64, `ulong` is an alias for u64, `float` is an alias for f32, and `double` is an alias for f64
+- Dot for everything, including accessing members, calling methods, using stuff in a namespace, and accessing members and methods on a reference
+- Rust-like struct initialization with brackets
+- Python-like string formatting
+- Import statements
+- Single inheritance
+- Compile time duck typing
 
-### Example:
+**Basic example:**
 ```z
 import std;
 
-void main() {
-	std::print("Hello, World!");
+fn main() {
+	let number = 21;
+	std.print(f"The Number is: {number * 2}"); // prints "The Number is: 42"
 }
 ```
 
-### Inheritance example:
+**Structs example:**
 ```z
 import std;
-import vectormath;
-use vectormath::vec2;
+use std.String;
+
+struct Point {
+	let x float = 0.0;
+	let y float = 0.0;
+
+	// Member functions
+	fn member() bool {
+		std.print("Called the useless member function on Point");
+		true
+	}
+	
+	// You can overload () to make it act like a C++ constructor
+	// Inline forces inlinement, if not explicitly included then in build mode LLVM might automatically inline small functions even if not marked inline
+	inline fn operator<`()`>(x float, y float) Self {
+		Self {x, y}
+	}
+
+	// Operator overloading is supported like this
+	// The backticks are there because otherwise overloading greater than might confuse the compiler
+	// Also capital Self acts as an alias for Point here, but lowercase self takes in self directly
+	fn operator<`+`, Self>(self, other Self) Self {
+		Self(self.x + other.x, self.y + other.y)
+	}
+
+	// Use &self if you want to take self as a reference instead
+	fn operator<`+=`, Self>(&self, other Self) Self {
+		self.x += other.x;
+		self.y += other.y;
+	}
+
+	// used in printing
+	fn format(self) String {
+		f"({self.x}, {self.y})"
+	}
+}
+
+fn main() {
+	let point Point; // initalizes with defaults (0, 0)
+	point += Point(1.0, 2.0);
+	std.print(f"Point: {point}");
+	let point2 = point + Point(-0.567465, 45.473678);
+	std.print(f"Point2: {point2}");
+}
+```
+
+**Inheritance example:**
+
+```z
+import std;
+import math; // Math is for vector math, stuff like square rooting and such is a core feature
+use std.(Vec, String), math.vec2; // vec2 is lowercase to line up with shaders and stuff and because it's a very simple struct
 
 class Node {
-	String name;
-	virtual void update(float delta) {}
+	let name String;
+	let parent &Node = null;
+	let children Vec<&Node> = Vec.new(); // functions in defaults are called when it's created unless you wrap it in a const block or something, but then that would probably cause a segmentation fault for vecs because the pointer is only valid at compile time
+	let position vec2 = vec2(0.0, 0.0);
+	virtual fn process(&self, dt float) {}
 }
 
-class Node2D : Node {
-	vec2 position;
-	vec2 scale;
-	float rotation;
+class Sprite : Node {
+	let texture_path String;
+	override fn process(&self, dt float) {
+		self.position.x += 10.0 * dt;
+		std.print(f"Position of {self.name}: {self.position}");
+	}
 }
 
-void main() {
-	Vec<&Node> nodes = [
-		&Node2D {
-			name: "Player",
-			position: vec2(0.0, 0.0),
-			scale: vec2(1.0, 1.0),
-			rotation: 0.0,
-		},
-		&Node {
-			name: "A node"
+fn main() {
+	let player = Sprite{ name: "Player", texture_path: "assets/player.png" }; // Uninitialized values are set to their default, unless they don't have one then it throws an error if unset
+	let enemy = Sprite{ name: "Enemy", position: vec2(0.0, 100.0), texture_path: "assets/enemy.png" };
+
+	let world Vec<&Node> = [&player, &enemy];
+	
+	while true {
+		for node in world {
+			node.process();
 		}
-	];
-	for node in nodes {
-		printf("Found node: {node.name}");
+		sleep(100); // in miliseconds, when I actually make this sleep wouldn't be in global scope
 	}
-}
-```
-
-### Duck typing example
-```z
-V add<T, U, V>(T first, U second) {
-	(first.floor() + second.ceiling() as T) as V
-}
-
-void main() {
-	f32 first = 1.1; // infer
-	int result = add(first, 2.3_f64); // or use f64 suffix, underscore for readability
-	printf("Result: {result}"); // 4
-}
-```
-
-### Structs and constructor example
-```z
-struct Point {
-	f32 x;
-	f32 y;
-	constructor default(f32 x, f32 y) {
-		self.x = x;
-		self.y = y;
-	}
-	constructor scalar(f32 scalar) {
-		self.x = scalar;
-		self.y = scalar;
-	}
-}
-
-void main() {
-	Point pointA = Point(3.0, 5.0);
-	Point pointB = Point(-3.14159);
-	Point pointC = Point { x: 1.1, y: 2.2 };
 }
 ```
