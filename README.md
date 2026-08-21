@@ -42,9 +42,8 @@ struct Point {
 		true
 	}
 	
-	// You can overload () statically to make it act like a C++ constructor
-	// Inline forces inlinement, if not explicitly included then in build mode LLVM might automatically inline small functions even if not marked inline
-	inline fn operator"()"(x: f32, y: f32) Self {
+	// You can have a function which is called by calling the class by having a function named "construct"
+	fn construct(x: f32, y: f32) Self {
 		Self {x, y}
 	}
 
@@ -86,24 +85,18 @@ import std;
 import math; // Math is for vector math, stuff like square rooting and such is a core feature
 use std.(Vec, String), math.vec2; // vec2 is lowercase to line up with shaders and stuff and because it's a very simple struct
 
+// Classes are just like structs but with inheritance
 class Node {
-	let name: String;
-	let parent: &Node = null;
-	let children: Vec<&Node> = Vec.new();
-	let position: vec2 = vec2(0.0, 0.0);
+	name: String,
+	parent: &Node = null,
+	children: Vec<&Node> = Vec.new(),
+	position: vec2 = vec2(0.0, 0.0),
 	
 	virtual fn process(&self, dt float) {}
 }
 
 class Sprite : Node {
-	let texture_path: String;
-
-	// Classes have constructors
-	fn construct(&self, name: String, position: vec2, texture_path: String) {
-		self.name = name;
-		self.position = position;
-		self.texture_path = texture_path;
-	}
+	texture_path: String,
 	
 	override fn process(&self, dt float) {
 		self.position.x += 10.0 * dt;
@@ -112,8 +105,8 @@ class Sprite : Node {
 }
 
 fn main() {
-	let player = Sprite("Player", vec2(0.0, 0.0), "assets/player.png");
-	let enemy = Sprite("Enemy", vec2(0.0, 100.0), "assets/enemy.png");
+	let player = Sprite{name: "Player", texture_path: "assets/player.png"};
+	let enemy = Sprite{name: "Enemy", position: vec2(0.0, 100.0), texture_path: "assets/enemy.png"};
 
 	let world: Vec<&Node> = [&player, &enemy];
 	
