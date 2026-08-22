@@ -13,14 +13,16 @@ I need names for it! Z is the placeholder
 - You can overload most operators by putting a function named operator with the operator in quotes and the other type is based on the paramaters, ex. `fn operator"*"(self, other: f32) Self { Self(self.x * other, self.y * other) }`
 - Rust-like struct initialization with brackets
 - Python-like string formatting
-- Import statements
+- Import statements, maybe, or maybe libraries will just be defined in the package manager file and made global scope like in Rust, I don't know yet
 - Single inheritance
 - Compile time duck typing
+- Defaults for arguments are allowed, but no overloading
+- You can use the bracket initialization of structs without its name if it's inferrable, ex `fn button(label: &str, options: ButtonOptions = {}) bool {...}` then `button("Hello World", {color: 0xFF0000})`
+- `&str` is like `&char` for a UTF-8 encoded string and with some string-related functions
+- `String` is like `Vec<char>` for a UTF-8 encoded string and with some string-related functions
 
 **Basic example:**
 ```z
-import std;
-
 fn main() {
 	let number: i32 = 21;
 	std.print(f"The Number is: {number * 2}"); // prints "The Number is: 42"
@@ -29,9 +31,6 @@ fn main() {
 
 **Structs example:**
 ```z
-import std;
-use std.String;
-
 struct Point {
 	x: f32 = 0.0;
 	y: f32 = 0.0;
@@ -81,10 +80,6 @@ fn main() {
 **Classes & Inheritance example: (will probably change a lot before added)**
 
 ```z
-import std;
-import math; // Math is for vector math, stuff like square rooting and such is a core feature
-use std.(Vec, String), math.vec2; // vec2 is lowercase to line up with shaders and stuff and because it's a very simple struct
-
 // Classes are just like structs but with inheritance
 class Node {
 	name: String,
