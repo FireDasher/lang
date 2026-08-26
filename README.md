@@ -10,7 +10,7 @@ I need names for it! Z is the placeholder
 - You can ommit the return value of a function to return nothing
 - Types are fixed-width and have names based on their size like in Rust, ex. `i32` = int, `u32` = unsigned int, `i64` = long long, `u64` = unsigned long long, `f32` = float, `f64` = double. 
 - Dot for everything, including accessing members, calling methods, using stuff in a namespace, and accessing members and methods on a reference
-- You can overload most operators by putting a function named operator with the operator in quotes and the other type is based on the paramaters, ex. `fn operator"*"(self, other: f32) Self { Self(self.x * other, self.y * other) }`
+- You can overload most operators by putting a function named operator_name of the operator you want to overload, ex. `fn operator_mul(self, other: f32) Self { Self(self.x * other, self.y * other) }`
 - Rust-like struct initialization with brackets
 - Python-like string formatting
 - Import statements, maybe, or maybe libraries will just be defined in the package manager file and made global scope like in Rust, I don't know yet
@@ -49,12 +49,12 @@ struct Point {
 	// Operator overloading is supported like this
 	// The backticks are there because otherwise overloading greater than might confuse the compiler
 	// Also capital Self acts as an alias for Point here, but lowercase self takes in self directly
-	fn operator"+"(self, other: Self) Self {
+	fn operator_add(self, other: Self) Self {
 		Self(self.x + other.x, self.y + other.y)
 	}
 
 	// Use &self if you want to take self as a reference instead
-	fn operator"+="(&self, other: Self) Self {
+	fn operator_add_assign(&self, other: Self) Self {
 		self.x += other.x;
 		self.y += other.y;
 	}
