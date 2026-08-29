@@ -75,19 +75,20 @@ pub enum Token {
 	#[token("$")]
 	Dollar,
 
-	#[token("!")]
-	Not,
-
 	#[token("==")]
 	Eq,
+	#[token("!=")]
+	Ne,
 	#[token("<")]
 	Lt,
+	#[token("<=")]
+	Le,
 	#[token(">")]
 	Gt,
-	#[token("<=")]
-	Lte,
 	#[token(">=")]
-	Gte,
+	Ge,
+	#[token("<=>")]
+	Cmp,
 
 	#[token("+")]
 	Add,
@@ -106,9 +107,9 @@ pub enum Token {
 	#[token("/=")]
 	DivAssign,
 	#[token("%")]
-	Mod,
+	Rem,
 	#[token("%=")]
-	ModAssign,
+	RemAssign,
 
 	#[token("&")]
 	And,
@@ -122,6 +123,8 @@ pub enum Token {
 	Xor,
 	#[token("^=")]
 	XorAssign,
+	#[token("!")]
+	Not,
 
 	#[token("&&")]
 	SCAnd,

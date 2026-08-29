@@ -4,7 +4,7 @@ pub enum Biop {
 	Sub,
 	Mul,
 	Div,
-	Mod,
+	Rem,
 
 	And,
 	Or,
@@ -19,8 +19,9 @@ pub enum Biop {
 	Eq,
 	Lt,
 	Gt,
-	Lte,
-	Gte,
+	Le,
+	Ge,
+	Cmp,
 }
 
 /// Binary assignments
@@ -31,7 +32,7 @@ pub enum Assign {
 	SubAssign,
 	MulAssign,
 	DivAssign,
-	ModAssign,
+	RemAssign,
 
 	AndAssign,
 	OrAssign,
@@ -49,8 +50,8 @@ pub enum Unop {
 
 /// Embraced code
 pub struct Block {
-	pub statements: Vec<Statement>,
-	pub end: Option<Box<Expr>>,
+	pub statements: Vec<Stmt>,
+	pub end: Option<BExpr>,
 }
 
 /// Function paramater
@@ -73,9 +74,9 @@ pub enum Stuff {
 		access: AccessSpecifier,
 		name: String,
 		ty: String,
-		default: Option<Expr>,
+		default: Option<BExpr>,
 	},
-	Statement(Statement), // Varaibles not allowed here
+	Stmt(Stmt), // Varaibles not allowed here
 }
 pub enum DeclareMode {
 	Let, // Mutable
@@ -84,20 +85,24 @@ pub enum DeclareMode {
 }
 
 pub enum Expr {
-	/// Dot operator
-	Access(Box<Expr>, Box<Expr>),
+	/// a.b
+	Access(BExpr, BExpr),
+
+	/// a[b]
+	Index(BExpr, BExpr),
 
 	/// An operator
-	Biop(Biop, Box<Expr>, Box<Expr>),
-	Unop(Unop, Box<Expr>),
+	Biop(Biop, BExpr, BExpr),
+	Unop(Unop, BExpr),
 
-	As(Box<Expr>, String),
+	// Var as Type converts it
+	As(BExpr, BExpr),
 
 	/// fUnction callation
-	Call(Box<Expr>, Vec<Expr>),
+	Call(BExpr, Vec<Expr>),
 
 	/// Braces notation
-	Init(Box<Expr>, Vec<(String, Expr)>),
+	Init(BExpr, Vec<(String, Expr)>),
 
 	/// jUSt a Block
 	Block(Block),
@@ -109,38 +114,39 @@ pub enum Expr {
 	Float(f64),
 
 	// Control flow
-	If(Box<Expr>, Block),
-	Elif(Box<Expr>, Block),
-	Else(Block),
+	If {condition: BExpr, then: Block},
+	Elif {condition: BExpr, then: Block},
+	Else {then: Block},
 	// for var in expr {...} can return something using break
-	For(String, Box<Expr>, Block),
+	For {var: String, within: BExpr, doing: Block},
 	/// INFINITE loop (requires break)
-	Loop(Block),
+	Loop {doing: Block},
 	/// while expr {...} can also return something using break
-	While(Box<Expr>, Block),
+	While {condition: BExpr, doing: Block},
 }
+type BExpr = Box<Expr>;
 
-pub enum Statement {
-	Import(String),
+pub enum Stmt {
+	Import {path: String},
 
-	/// For both C and C++; first is what to define second is what to define to, blank for nothing
-	CDefine(String, String),
+	/// For both C and C++
+	CDefine {name: String, value: String},
 
-	CImport(String),
-	CppImport(String),
+	CImport {path: String},
+	CppImport {path: String},
 
-	/// The identifier of the variable to declare, and the expression to initialize itt with or None for no initializement
-	Declare(DeclareMode, String, Option<Expr>),
-	/// The operator, the identifier to be assigned to, and the expression to assign
-	Assign(Assign, String, Expr),
+	/// Declares a variable/constant
+	Declare {mode: DeclareMode, name: String, value: Option<BExpr>},
+
+	Assign {mode: Assign, to: BExpr, value: BExpr},
 
 	/// Traditional returnment, bypasses blocks ending with expressions
-	Return(Expr),
+	Return {value: BExpr},
 
 	/// continue:label;
-	Continue(Option<String>),
+	Continue {label: Option<String>},
 	/// break:label return_value;
-	Break(Option<String>, Expr),
+	Break {label: Option<String>, value: BExpr},
 
 	Func {
 		access: AccessSpecifier,
