@@ -82,16 +82,16 @@ fn main() {
 ```z
 // Classes are just like structs but with inheritance
 class Node {
-	name: String,
-	parent: &Node = null,
-	children: Vec<&Node> = Vec.new(),
-	position: vec2 = vec2(0.0, 0.0),
+	name: String;
+	parent: &Node = null;
+	children: Vec<&Node> = Vec.new();
+	position: vec2 = vec2(0.0, 0.0);
 	
 	virtual fn process(&self, dt float) {}
 }
 
 class Sprite : Node {
-	texture_path: String,
+	texture_path: String;
 	
 	override fn process(&self, dt float) {
 		self.position.x += 10.0 * dt;

@@ -17,6 +17,8 @@ pub enum Token {
 	If,
 	#[token("else")]
 	Else,
+	#[token("elif")]
+	Elif,
 	#[token("for")]
 	For,
 	#[token("while")]
@@ -82,6 +84,10 @@ pub enum Token {
 	Lt,
 	#[token(">")]
 	Gt,
+	#[token("<=")]
+	Lte,
+	#[token(">=")]
+	Gte,
 
 	#[token("+")]
 	Add,
@@ -103,10 +109,6 @@ pub enum Token {
 	Mod,
 	#[token("%=")]
 	ModAssign,
-	#[token("**")]
-	Pow,
-	#[token("**=")]
-	PowAssign,
 
 	#[token("&")]
 	And,
@@ -125,8 +127,6 @@ pub enum Token {
 	SCAnd,
 	#[token("||")]
 	SCOr,
-	#[token("^^")]
-	SCXor,
 
 	#[token("<<")]
 	LShift,
@@ -144,7 +144,7 @@ pub enum Token {
 	#[regex(r"\d+", |lex| lex.slice().parse::<u64>().expect("Invalid integer literal"))]
 	Int(u64),
 	#[regex(r"\d+\.\d+(?:[eE][+-]?\d+)?", |lex| lex.slice().parse::<f64>().expect("Invalid float literal"))]
-	Number(f64),
+	Float(f64),
 
 	#[regex(r#""([^"\\\x00-\x1F]|\\(["\\bnfrt/]|u[a-fA-F0-9]{4}))*""#, |lex| lex.slice().to_string())]
 	String(String),
