@@ -4,6 +4,16 @@ It's my new, unnamed programming language. It's like C++ but better.
 
 I need names for it! Z is the placeholder
 
+## Strict No LLM / No AI Policy
+
+No LLMs for issues.
+
+No LLMs for patches / pull requests.
+
+No LLMs for comments on the bug tracker.
+
+No LLMs for devlopment in any way.
+
 ## Planned Features:
 - Type is after like Rust, ex. `let value: i32 = 42`, or inferred if no type is after the name, ex. `let value = 42`
 - Functions are like `fn functionName(paramater_one: ParamaterOneType, paramater_two: ParamaterTwoType) return_type {...}`
