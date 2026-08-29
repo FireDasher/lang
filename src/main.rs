@@ -1,7 +1,7 @@
 mod token;
-mod ast;
 mod lexer;
-mod parser;
+// mod ast;
+// mod parser;
 
 fn main() {
 	let arg = std::env::args().nth(1).expect("You must provide and input file!");

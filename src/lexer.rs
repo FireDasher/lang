@@ -1,72 +1,46 @@
-use crate::token::{BinaryOperator, Token};
+use crate::token::Token;
 
 pub fn lex(input: &str) -> Vec<Token> {
-	let mut tokens = Vec::new();
-	let mut chars = input.chars();
-	let mut char = ' ';
-	let mut running = true;
+	let mut tokens: Vec<Token> = Vec::new();
 
-	macro_rules! get_char {
-	    () => {
-	        { match chars.next() { Some(c) => {char = c; true}, None => {running = false; false} } }
-	    };
-	}
+	let chars: Vec<char> = input.chars().collect();
+	let mut index = 0;
 
-	macro_rules! skip_char {
-	    () => {
-	        match chars.next() { Some(c) => {char = c}, None => {running = false} }
-	    };
-	}
-
-	while running {
+	loop {
+		if index >= chars.len() {
+			return tokens
+		}
+		let char = chars[index];
 		if char.is_whitespace() {
-			while get_char!() && char.is_whitespace() {}
-		}
-
-		else if char.is_alphabetic() {
-			let mut identifier = char.to_string();
-			while get_char!() && char.is_alphanumeric() {
+			index += 1;
+		} else if char.is_alphabetic() {
+			let mut identifier = String::new();
+			while let char = chars[index] && char.is_alphanumeric() {
 				identifier.push(char);
+				index += 1;
 			}
-			if identifier == "fn" {
-				tokens.push(Token::Fn);
-			} else if identifier == "extern" {
-				tokens.push(Token::Extern);
-			} else {
-				tokens.push(Token::Identifier(identifier));
-			}
-		}
-
-		else if char.is_ascii_digit() {
-			let mut num_str = char.to_string();
-			while get_char!() && (char.is_ascii_digit() || char == '.') {
+			tokens.push(Token::keyword(&identifier));
+		} else if char.is_ascii_digit() {
+			let mut num_str = String::new();
+			let mut is_float = false;
+			while let char = chars[index] && (char.is_ascii_digit() || char == '.') {
 				num_str.push(char);
+				if char == '.' {
+					is_float = true;
+				}
+				index += 1;
 			}
-			tokens.push(Token::Number(num_str.parse().expect("Error: Invalid number literal!")));
-		}
-
-		else if char == '#' {
-			while get_char!() && (char != '\n' && char != '\r') {}
-		}
-
-		else if char == '+' {
-			tokens.push(Token::Operator(BinaryOperator::Add));
-			skip_char!();
-		} else if char == '-' {
-			tokens.push(Token::Operator(BinaryOperator::Sub));
-			skip_char!();
-		} else if char == '*' {
-			tokens.push(Token::Operator(BinaryOperator::Mul));
-			skip_char!();
-		} else if char == '/' {
-			tokens.push(Token::Operator(BinaryOperator::Div));
-			skip_char!();
-		}
-
-		else {
-			// panic!("Invalid character: {char}");
-			skip_char!();
+			if is_float {
+				tokens.push(Token::Float(num_str.parse().expect("Error: Invalid float literal!")));
+			} else {
+				tokens.push(Token::Int(num_str.parse().expect("Error: Invalid integer literal!")));
+			}
+		} else {
+			let op = Token::operator(char);
+			if op != Token::Null {
+				tokens.push(op);
+			}
+			index += 1;
 		}
 	}
-	tokens
 }

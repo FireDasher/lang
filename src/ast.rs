@@ -1,4 +1,10 @@
-use crate::token::BinaryOperator;
+#[derive(Clone, Debug, PartialEq)]
+pub enum BinaryOperator {
+	Add,
+	Sub,
+	Mul,
+	Div,
+}
 
 pub trait ExprAST {}
 
