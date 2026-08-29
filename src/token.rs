@@ -25,65 +25,110 @@ pub enum Token {
 	CppImport,
 	Extern,
 
+	/// `=`
+	Assign,
+
 	/// `;`
-    Semi,
-    /// `,`
-    Comma,
-    /// `.`
-    Dot,
-    /// `(`
-    LParen,
-    /// `)`
-    RParen,
-    /// `{`
-    LBrace,
-    /// `}`
-    RBrace,
-    /// `[`
-    LBrack,
-    /// `]`
-    RBrack,
-    /// `@`
-    At,
-    /// `#`
-    Pound,
-    /// `~`
-    Tilde,
-    /// `?`
-    Question,
-    /// `:`
-    Colon,
-    /// `$`
-    Dollar,
-    /// `=`
-    Eq,
-    /// `!`
-    Bang,
-    /// `<`
-    Lt,
-    /// `>`
-    Gt,
-    /// `-`
-    Minus,
-    /// `&`
-    And,
-    /// `|`
-    Or,
-    /// `+`
-    Plus,
-    /// `*`
-    Star,
-    /// `/`
-    Slash,
-    /// `^`
-    Caret,
-    /// `%`
-    Percent,
+	Semi,
+	/// `,`
+	Comma,
+	/// `.`
+	Dot,
+
+	/// `(`
+	LParen,
+	/// `)`
+	RParen,
+	/// `{`
+	LBrace,
+	/// `}`
+	RBrace,
+	/// `[`
+	LBrack,
+	/// `]`
+	RBrack,
+
+	/// `@`
+	At,
+	/// `#`
+	Pound,
+	/// `~`
+	Tilde,
+	/// `?`
+	Question,
+	/// `:`
+	Colon,
+	/// `$`
+	Dollar,
+
+	/// `!`
+	Not,
+
+	/// `==`
+	Eq,
+	/// `<`
+	Lt,
+	/// `>`
+	Gt,
+
+	/// `+`
+	Add,
+	// `+=`
+	AddAssign,
+	/// `-` Also unary negation
+	Sub,
+	// `-=`
+	SubAssign,
+	/// `*`
+	Mul,
+	// `*=`
+	MulAssign,
+	/// `/`
+	Div,
+	// `/=`
+	DivAssign,
+	/// `%`
+	Mod,
+	// `%=`
+	ModAssign,
+	/// `**`
+	Pow,
+	// `**=`
+	PowAssign,
+
+	/// `&`
+	And,
+	// `&=`
+	AndAssign,
+	/// `|`
+	Or,
+	// `|=`
+	OrAssign,
+	/// `^`
+	Xor,
+	// `^=`
+	XorAssign,
+
+	/// `&&`
+	SCAnd,
+	/// `||`
+	SCOr,
+	/// `^^`
+	SCXor,
+
+	/// `<<`
+	LShift,
+	/// `<<=`
+	LShiftAssign,
+	/// `>>`
+	RShift,
+	/// `>>=`
+	RShiftAssign,
 
 	// Values
 	Ident(String),
 	Float(f64),
-	Int(i64),
+	Int(u64),
 }
 
 impl Token {
@@ -107,7 +152,7 @@ impl Token {
 			_ => Token::Ident(indentifier.to_string()),
 		}
 	}
-	pub fn operator(chararacter: char) -> Token {
+	pub fn symbol(chararacter: char) -> Token {
 		match chararacter {
 			';' => Token::Semi,
 			',' => Token::Comma,
@@ -125,17 +170,17 @@ impl Token {
 			':' => Token::Colon,
 			'$' => Token::Dollar,
 			'=' => Token::Eq,
-			'!' => Token::Bang,
+			'!' => Token::Not,
 			'<' => Token::Lt,
 			'>' => Token::Gt,
-			'-' => Token::Minus,
+			'-' => Token::Sub,
 			'&' => Token::And,
 			'|' => Token::Or,
-			'+' => Token::Plus,
-			'*' => Token::Star,
-			'/' => Token::Slash,
-			'^' => Token::Caret,
-			'%' => Token::Percent,
+			'+' => Token::Add,
+			'*' => Token::Mul,
+			'/' => Token::Div,
+			'^' => Token::Xor,
+			'%' => Token::Mod,
 			_ => Token::Null,
 		}
 	}

@@ -36,11 +36,50 @@ pub fn lex(input: &str) -> Vec<Token> {
 				tokens.push(Token::Int(num_str.parse().expect("Error: Invalid integer literal!")));
 			}
 		} else {
-			let op = Token::operator(char);
-			if op != Token::Null {
-				tokens.push(op);
+			match char {
+				'+' => {
+					tokens.push(if chars[index + 1] == '=' {
+						Token::AddAssign
+					} else {
+						Token::Add
+					});
+				}
+				'-' => {
+					tokens.push(if chars[index + 1] == '=' {
+						Token::SubAssign
+					} else {
+						Token::Sub
+					});
+				}
+				'*' => {
+					tokens.push(if chars[index + 1] == '=' {
+						Token::MulAssign
+					} else {
+						Token::Mul
+					});
+				}
+				'/' => {
+					tokens.push(if chars[index + 1] == '=' {
+						Token::DivAssign
+					} else {
+						Token::Div
+					});
+				}
+				'%' => {
+					tokens.push(if chars[index + 1] == '=' {
+						Token::ModAssign
+					} else {
+						Token::Mod
+					});
+				}
+				_ => {
+					let op = Token::symbol(char);
+					if op != Token::Null {
+						tokens.push(op);
+					}
+					index += 1;
+				}
 			}
-			index += 1;
 		}
 	}
 }
