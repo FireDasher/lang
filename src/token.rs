@@ -1,187 +1,155 @@
-#[allow(dead_code)]
-#[derive(Clone, Debug, PartialEq)]
+use logos::Logos;
+
+#[derive(Logos, Debug, PartialEq)]
+#[logos(skip r"[ \t\n\f]+")]
 pub enum Token {
-	Null,
-
 	// Keywords
+	#[token("let")]
 	Let,
-	True,
-	False,
-
+	#[token("fn")]
 	Fn,
+	#[token("struct")]
 	Struct,
+	#[token("class")]
 	Class,
 
+	#[token("if")]
 	If,
+	#[token("else")]
 	Else,
+	#[token("for")]
 	For,
+	#[token("while")]
 	While,
+	#[token("loop")]
 	Loop,
+	#[token("return")]
 	Return,
 
+	#[token("import")]
 	Import,
+	#[token("use")]
 	Use,
+	#[token("cimport")]
 	CImport,
+	#[token("cppimport")]
 	CppImport,
+	#[token("extern")]
 	Extern,
 
-	/// `=`
+	#[token("=")]
 	Assign,
 
-	/// `;`
+	#[token(";")]
 	Semi,
-	/// `,`
+	#[token(",")]
 	Comma,
-	/// `.`
+	#[token(".")]
 	Dot,
 
-	/// `(`
+	#[token("(")]
 	LParen,
-	/// `)`
+	#[token(")")]
 	RParen,
-	/// `{`
+	#[token("{")]
 	LBrace,
-	/// `}`
+	#[token("}")]
 	RBrace,
-	/// `[`
+	#[token("[")]
 	LBrack,
-	/// `]`
+	#[token("]")]
 	RBrack,
 
-	/// `@`
+	#[token("@")]
 	At,
-	/// `#`
+	#[token("#")]
 	Pound,
-	/// `~`
+	#[token("~")]
 	Tilde,
-	/// `?`
+	#[token("?")]
 	Question,
-	/// `:`
+	#[token(":")]
 	Colon,
-	/// `$`
+	#[token("$")]
 	Dollar,
 
-	/// `!`
+	#[token("!")]
 	Not,
 
-	/// `==`
+	#[token("==")]
 	Eq,
-	/// `<`
+	#[token("<")]
 	Lt,
-	/// `>`
+	#[token(">")]
 	Gt,
 
-	/// `+`
+	#[token("+")]
 	Add,
-	// `+=`
+	#[token("+=")]
 	AddAssign,
-	/// `-` Also unary negation
+	#[token("-")]
 	Sub,
-	// `-=`
+	#[token("-=")]
 	SubAssign,
-	/// `*`
+	#[token("*")]
 	Mul,
-	// `*=`
+	#[token("*=")]
 	MulAssign,
-	/// `/`
+	#[token("/")]
 	Div,
-	// `/=`
+	#[token("/=")]
 	DivAssign,
-	/// `%`
+	#[token("%")]
 	Mod,
-	// `%=`
+	#[token("%=")]
 	ModAssign,
-	/// `**`
+	#[token("**")]
 	Pow,
-	// `**=`
+	#[token("**=")]
 	PowAssign,
 
-	/// `&`
+	#[token("&")]
 	And,
-	// `&=`
+	#[token("&=")]
 	AndAssign,
-	/// `|`
+	#[token("|")]
 	Or,
-	// `|=`
+	#[token("|=")]
 	OrAssign,
-	/// `^`
+	#[token("^")]
 	Xor,
-	// `^=`
+	#[token("^=")]
 	XorAssign,
 
-	/// `&&`
+	#[token("&&")]
 	SCAnd,
-	/// `||`
+	#[token("||")]
 	SCOr,
-	/// `^^`
+	#[token("^^")]
 	SCXor,
 
-	/// `<<`
+	#[token("<<")]
 	LShift,
-	/// `<<=`
+	#[token("<<=")]
 	LShiftAssign,
-	/// `>>`
+	#[token(">>")]
 	RShift,
-	/// `>>=`
+	#[token(">>=")]
 	RShiftAssign,
 
-	// Values
+	// Literals
+	#[regex("[[:alpha:]][[:alnum:]]*", |lex| lex.slice().to_string())]
 	Ident(String),
-	Float(f64),
-	Int(u64),
-}
 
-impl Token {
-	pub fn keyword(indentifier: &str) -> Token {
-		match indentifier {
-			"fn" => Token::Fn,
-			"let" => Token::Let,
-			"true" => Token::True,
-			"false" => Token::False,
-			"if" => Token::If,
-			"else" => Token::Else,
-			"return" => Token::Return,
-			"for" => Token::For,
-			"while" => Token::While,
-			"loop" => Token::Loop,
-			"import" => Token::Import,
-			"use" => Token::Use,
-			"cimport" => Token::CImport,
-			"cppimport" => Token::CppImport,
-			"extern" => Token::Extern,
-			_ => Token::Ident(indentifier.to_string()),
-		}
-	}
-	pub fn symbol(chararacter: char) -> Token {
-		match chararacter {
-			';' => Token::Semi,
-			',' => Token::Comma,
-			'.' => Token::Dot,
-			'(' => Token::LParen,
-			')' => Token::RParen,
-			'{' => Token::LBrace,
-			'}' => Token::RBrace,
-			'[' => Token::LBrack,
-			']' => Token::RBrack,
-			'@' => Token::At,
-			'#' => Token::Pound,
-			'~' => Token::Tilde,
-			'?' => Token::Question,
-			':' => Token::Colon,
-			'$' => Token::Dollar,
-			'=' => Token::Eq,
-			'!' => Token::Not,
-			'<' => Token::Lt,
-			'>' => Token::Gt,
-			'-' => Token::Sub,
-			'&' => Token::And,
-			'|' => Token::Or,
-			'+' => Token::Add,
-			'*' => Token::Mul,
-			'/' => Token::Div,
-			'^' => Token::Xor,
-			'%' => Token::Mod,
-			_ => Token::Null,
-		}
-	}
+	#[regex(r"\d+", |lex| lex.slice().parse::<u64>().expect("Invalid integer literal"))]
+	Int(u64),
+	#[regex(r"\d+\.\d+(?:[eE][+-]?\d+)?", |lex| lex.slice().parse::<f64>().expect("Invalid float literal"))]
+	Number(f64),
+
+	#[regex(r#""([^"\\\x00-\x1F]|\\(["\\bnfrt/]|u[a-fA-F0-9]{4}))*""#, |lex| lex.slice().to_string())]
+	String(String),
+
+	#[token("false", |_| false)]
+	#[token("true", |_| true)]
+	Bool(bool),
 }
