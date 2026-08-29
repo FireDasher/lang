@@ -12,7 +12,7 @@ No LLMs for patches / pull requests.
 
 No LLMs for comments on the bug tracker.
 
-No LLMs for development on the compiler in any way.
+No LLMs for development on this repository in any way.
 
 ## Planned Features:
 - Type is after like Rust, ex. `let value: i32 = 42`, or inferred if no type is after the name, ex. `let value = 42`
