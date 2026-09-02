@@ -42,8 +42,8 @@ fn main() {
 **Structs example:**
 ```z
 struct Point {
-	x: f32 = 0.0;
-	y: f32 = 0.0;
+	let x: f32 = 0.0;
+	let y: f32 = 0.0;
 
 	// Member functions
 	fn member() bool {
@@ -87,21 +87,21 @@ fn main() {
 }
 ```
 
-**Classes & Inheritance example: (will probably change a lot before added)**
+**Classes & Inheritance example:**
 
 ```z
 // Classes are just like structs but with inheritance
 class Node {
-	name: String;
-	parent: &Node = null;
-	children: Vec<&Node> = Vec.new();
-	position: vec2 = vec2(0.0, 0.0);
+	let name: String;
+	let parent: &Node = null;
+	let children: Vec<&Node> = Vec.new();
+	let position: vec2 = vec2(0.0, 0.0);
 	
 	virtual fn process(&self, dt float) {}
 }
 
 class Sprite : Node {
-	texture_path: String;
+	let texture_path: String;
 	
 	override fn process(&self, dt float) {
 		self.position.x += 10.0 * dt;
@@ -123,3 +123,11 @@ fn main() {
 	}
 }
 ```
+
+**Enums example:**
+pub enum IntegerType {
+  // Cases are automatically public
+  case Int16, Int32, Int64;
+  case Uint16, Uint32, Uint64;
+  case Byte;
+}
