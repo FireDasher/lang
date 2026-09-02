@@ -31,6 +31,9 @@ No LLMs for development on this repository in any way.
 - `&str` is like `&char` for a UTF-8 encoded string and with some string-related functions
 - `String` is like `Vec<char>` for a UTF-8 encoded string and with some string-related functions
 
+- Use `let` for immutable declarations and `var` for mutable declarations
+- Use `&Type` for immutable references and `*Type` for mutable references
+
 **Basic example:**
 ```z
 fn main() {
