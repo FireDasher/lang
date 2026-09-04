@@ -30,9 +30,7 @@ No LLMs for development on this repository in any way.
 - You can use the bracket initialization of structs without its name if it's inferrable, ex `fn button(label: &str, options: ButtonOptions = {}) bool {...}` then `button("Hello World", {color: 0xFF0000})`
 - `&str` is like `&char` for a UTF-8 encoded string and with some string-related functions
 - `String` is like `Vec<char>` for a UTF-8 encoded string and with some string-related functions
-
-- Use `let` for immutable declarations and `var` for mutable declarations
-- Use `&Type` for immutable references and `*Type` for mutable references
+- All variables and pointers are always mutable
 
 **Basic example:**
 ```z
@@ -128,9 +126,11 @@ fn main() {
 ```
 
 **Enums example:**
+```z
 pub enum IntegerType {
   // Cases are automatically public
   case Int16, Int32, Int64;
   case Uint16, Uint32, Uint64;
   case Byte;
 }
+```
