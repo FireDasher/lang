@@ -31,6 +31,9 @@ No LLMs for development on this repository in any way.
 - `&str` is like `&char` for a UTF-8 encoded string and with some string-related functions
 - `String` is like `Vec<char>` for a UTF-8 encoded string and with some string-related functions
 - All variables and pointers are always mutable
+- Macros begine with a hashtag and don't need an newline or anything because they are like this: #my_macro or #my_macro(paramater_one, paramater_two)
+- Powerful preprocessor, like with Rust's procedural macros
+- Store a variable that stays around during compilation to be used in procedural macros, so you can do things like having a global registry then you use #Register to register something then somewhere you put #register_all which is a procedural macro to generate registering code to register every type collected by the variable
 
 **Basic example:**
 ```z
@@ -132,5 +135,27 @@ pub enum IntegerType {
   case Int16, Int32, Int64;
   case Uint16, Uint32, Uint64;
   case Byte;
+}
+```
+
+**Macros:**
+```z
+#global(REGISTERED: Vec<StructAst>)
+#struct_macro(Reflect<obj: StructAst>() { // Use <> to take something implicitly, use () for explicit paramaters
+  REGISTERED.push(obj);
+})
+#macro(RegisterAll() Vec<Expr> { // If the () is empty the macro doesn't need () to be called
+  // here you would build expressions with each doing `std.print(f"Found Type: {obj.name}");`
+})
+
+#Reflect
+struct Object {
+  #hide pub field: i32,
+  #show another_field: i32,
+  pub hdjgsdg: f32,
+}
+
+fn main() {
+  #RegisterAll
 }
 ```
